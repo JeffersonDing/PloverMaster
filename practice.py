@@ -2,6 +2,7 @@ import serial
 import random
 import sys
 from art import *
+import glob
 import os
 
 
@@ -11,6 +12,20 @@ def read(ser):
         if(s):
             return(s.hex())
 
+def init():
+    try:
+        ports = glob.glob("/dev/tty.*")
+        for i in range(0,len(ports)):
+            print(i,". ",ports[i])
+        print("Select device: ", end="")
+        try:
+            return(ports[int(input())])
+        except:
+            print("Not a valid selection")
+            exit()
+    except:
+        print("No connected devices found!")
+        quit()
 
 def register_map(ser):
     keys = ["S_left_1","T_left","P_left","H","*_1","F","P_right","L","T_right","D","S_left_2","K","W","R_left","*_2","R_right","B","G","S_right","Z","A","O","E","U"]
@@ -39,7 +54,7 @@ def clearConsole():
 
 if __name__ == "__main__":
     try:
-        ser = serial.Serial('/dev/tty.usbmodem03', 9600, timeout=0.5)
+        ser = serial.Serial(init(), 9600, timeout=0.5)
         # print(ser.name)
         # register_map(ser)
         practice(ser)
